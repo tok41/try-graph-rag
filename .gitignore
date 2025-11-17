@@ -14,3 +14,14 @@ wheels/
 
 # Environment variables
 .env
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Phase output files (generated data)
+data/phase_*_outputs/
+
+# OS files
+.DS_Store
+*.log

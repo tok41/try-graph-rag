@@ -110,3 +110,31 @@ As phases progress:
 - `matplotlib` - visualization
 - `python-dotenv` - environment variable loading
 - `pyyaml` or `json` - data serialization (built-in for json)
+
+## Phase 1 Progress Notes
+
+### Completed
+- Created `phase_1_graph_basics.ipynb` with basic graph construction and visualization
+- Learned NetworkX fundamentals:
+  - `nx.Graph()` - Creating graph instances
+  - `add_node()` vs `add_nodes_from()` - Single vs. batch node addition
+  - `add_edge()` and `add_edges_from()` - Edge creation
+  - `nx.spring_layout()` - Graph layout algorithm using spring model
+
+### Code Standards Applied
+- **Matplotlib visualization**: Switched from implicit style (`plt.figure()`) to explicit style (`fig, ax = plt.subplots()`)
+  - Uses explicit axes object for better control and maintainability
+  - Enables future extension to multi-plot layouts
+- **Graph layout**: Using `spring_layout` with `seed=42` for reproducible results
+
+### Important Concepts
+- **Spring Layout**: Uses a spring model where nodes repel each other and edges attract connected nodes
+- **Other layout options**: `circular_layout`, `kamada_kawai_layout`, `spectral_layout`, `random_layout`
+- **External data**: Can read graphs from CSV, JSON, GEXF, GraphML formats using:
+  - `pd.read_csv()` + manual graph construction (flexible for attributes)
+  - `nx.read_edgelist()` (simple edge lists)
+  - `nx.read_gexf()`, `nx.read_graphml()` (structured formats)
+
+### Next Steps
+- Phase 2: Extract knowledge triples from text (LLM-based or manual)
+- Consider CSV-based node/edge specification for realistic data workflows
