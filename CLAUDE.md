@@ -138,3 +138,176 @@ As phases progress:
 ### Next Steps
 - Phase 2: Extract knowledge triples from text (LLM-based or manual)
 - Consider CSV-based node/edge specification for realistic data workflows
+
+## Phase 2 Plan: Knowledge Graph Construction from Text
+
+### Overview
+Phase 2 focuses on extracting knowledge triples (Subject-Predicate-Object) from text and building a NetworkX graph. This is the bridge between unstructured text and structured knowledge graphs.
+
+### Learning Objectives
+1. Understand knowledge triples structure
+2. Extract triples from text using LLM (OpenAI API)
+3. Normalize and validate extracted triples
+4. Build and visualize a knowledge graph from triples
+5. Compare manual vs. LLM-based triple extraction
+
+### Implementation Approach
+
+#### Step 1: Sample Data Preparation
+- Create sample text files in `data/raw/` (e.g., Wikipedia articles, product descriptions)
+- Example texts should be simple enough for manual verification initially
+- Store raw data for reproducibility
+
+#### Step 2: Manual Triple Extraction (Warm-up)
+- Manually extract triples from a sample text to understand the structure
+- Format: `(subject, predicate, object)` tuples
+- Example from "Alice works at Google":
+  - `("Alice", "works_at", "Google")`
+  - `("Google", "is_a", "company")`
+- Save manually extracted triples for reference
+
+#### Step 3: LLM-based Triple Extraction
+- Use OpenAI API to automatically extract triples
+- Prompt engineering: Design clear prompts to guide triple extraction
+- Handle:
+  - Entity normalization (same entity, different names)
+  - Duplicate removal
+  - Triple validation
+- Store extracted triples in JSON format
+
+**Key Dependencies**:
+- `openai` library (already in pyproject.toml or add if missing)
+- `python-dotenv` for environment variables
+- Existing `config.py` for API key loading
+
+#### Step 4: Output Format
+Save extracted triples to `data/phase_2_outputs/triples.json`:
+
+```json
+{
+  "source_text": "filename.txt",
+  "triples": [
+    {
+      "subject": "Alice",
+      "predicate": "works_at",
+      "object": "Google",
+      "confidence": 0.95
+    },
+    {
+      "subject": "Google",
+      "predicate": "is_a",
+      "object": "company",
+      "confidence": 0.90
+    }
+  ],
+  "metadata": {
+    "extraction_method": "llm",
+    "model": "gpt-3.5-turbo",
+    "total_triples": 2,
+    "extraction_date": "2025-11-18"
+  }
+}
+```
+
+#### Step 5: Add Utility Function in `src/`
+Create or extend `src/utils.py` with:
+- `extract_triples_from_text()` - LLM-based extraction
+- `normalize_entities()` - Entity name normalization
+- `validate_triple()` - Triple validation logic
+- `merge_triples()` - Handle duplicate/related triples
+- `build_graph_from_triples()` - Construct NetworkX graph from triples
+- `visualize_knowledge_graph()` - Graph visualization helper
+
+#### Step 6: Graph Construction
+- Convert triples to NetworkX graph:
+  - Subject and Object become nodes
+  - Predicate becomes edge label
+  - Store relationships with attributes (confidence, source, etc.)
+- Example:
+  ```python
+  # From triple: ("Alice", "works_at", "Google")
+  # Create: G.add_edge("Alice", "Google", relation="works_at", confidence=0.95)
+  ```
+
+#### Step 7: Graph Visualization & Analysis
+- Visualize the constructed knowledge graph
+- Display graph statistics:
+  - Number of nodes (entities)
+  - Number of edges (relationships)
+  - Node degree distribution
+  - Most connected entities
+- Compare graph size: manual vs. LLM extraction
+
+### Notebook Structure (`phase_2_knowledge_triples.ipynb`)
+
+```
+1. Imports & Setup
+   - Load environment variables (OPENAI_API_KEY)
+   - Import utilities and data handlers
+
+2. Sample Data
+   - Load sample text from data/raw/
+   - Display sample content
+
+3. Manual Triple Extraction
+   - Manually extract triples from sample text
+   - Show structure and examples
+
+4. LLM-based Extraction
+   - Call OpenAI API with well-designed prompt
+   - Parse and structure results
+   - Handle errors gracefully
+
+5. Post-processing
+   - Remove duplicates
+   - Normalize entities
+   - Validate triples
+
+6. Graph Construction from Triples
+   - Convert triples to NetworkX graph
+   - Add relationship attributes
+   - Create separate graphs: manual vs. LLM
+
+7. Graph Visualization
+   - Visualize both graphs side-by-side
+   - Display graph statistics
+   - Compare sizes and structure
+
+8. Save Results
+   - Save triples to data/phase_2_outputs/triples.json
+   - Save graphs (as GEXF or pickle format)
+   - Save metadata and statistics
+```
+
+### Success Criteria
+- [ ] Created `phase_2_knowledge_triples.ipynb`
+- [ ] Sample text files in `data/raw/`
+- [ ] Successfully extract triples using OpenAI API
+- [ ] Built NetworkX graphs from extracted triples (both manual and LLM)
+- [ ] Graphs visualized and compared side-by-side
+- [ ] Output saved to `data/phase_2_outputs/`:
+  - `triples.json` (extracted triples with metadata)
+  - `graph_manual.gexf` or `graph_manual.pkl` (manual extraction graph)
+  - `graph_llm.gexf` or `graph_llm.pkl` (LLM extraction graph)
+  - `statistics.json` (graph statistics and comparison)
+- [ ] Triple extraction and graph building utilities in `src/utils.py`
+- [ ] Notebook runs without errors and produces reproducible output
+
+### Key Decisions to Make
+1. **Scope of triples**: Single sentence or paragraph-level extraction?
+2. **Triple validation**: What makes a "good" triple? Rules-based or LLM-based filtering?
+3. **Entity linking**: Should we link to Phase 1 graph entities or keep independent?
+4. **Confidence scores**: Should we track extraction confidence from LLM?
+
+### Dependencies to Verify/Add
+```python
+# In pyproject.toml:
+openai >= 1.0.0
+python-dotenv >= 0.19.0
+pandas  # for optional CSV output
+```
+
+### Related CLAUDE.md Concepts from Phase 1
+- Data directory structure: `data/raw/` for inputs, `data/phase_2_outputs/` for results
+- Shared utilities: Use `src/data_handler.py` for save_json/load_json
+- Environment loading: Use `src/config.py` for OPENAI_API_KEY
