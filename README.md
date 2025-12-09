@@ -22,6 +22,9 @@
 | **4. Neo4jへ永続化＋可視化** | グラフDBへ投入・Cypherクエリ実践 | `Neo4j`, `Cypher` | グラフDB操作とクエリ構築を習得 |
 | **5. Graph RAGを構築・比較** | LangChain + Neo4jでGraph RAG実装 | `LangChain`, `Neo4j`, `OpenAI API` | 通常RAGとの比較でGraph RAGの効果を理解 |
 
+- フェーズ3については、フェーズ2の中で試したので飛ばす
+  - `notebooks/phase_2_knowledge_graph_handwrite.ipynb` 参照
+
 ## 環境構築
 
 ここでは、 [uv](https://github.com/astral-sh/uv) を利用した環境構築を例にします。パッケージ管理については利用の環境に合わせてください。

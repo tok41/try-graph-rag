@@ -19,8 +19,13 @@ wheels/
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
-# Phase output files (generated data)
+# data
 data/phase_*_outputs/
+
+# Neo4j (docker volume)
+neo4j/data/
+neo4j/logs/
+neo4j/plugins/
 
 # OS files
 .DS_Store
