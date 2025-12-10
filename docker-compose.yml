@@ -1,0 +1,17 @@
+services:
+  neo4j:
+    image: neo4j:5
+    container_name: neo4j
+    ports:
+      - "7474:7474"   # ブラウザUI (http://localhost:7474)
+      - "7687:7687"   # Bolt (Pythonドライバなど)
+    environment:
+      # ログインユーザとパスワード
+      - NEO4J_AUTH=neo4j/password
+      # - NEO4J_server_memory_pagecache_size=2G
+      # - NEO4J_server_memory_heap_initial__size=1G
+      # - NEO4J_server_memory_heap_max__size=1G
+    volumes:
+      - ./neo4j/data:/data   # データ永続化
+      - ./neo4j/logs:/logs   # ログ永続化
+      - ./neo4j/plugins:/plugins
